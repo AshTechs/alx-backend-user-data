@@ -7,6 +7,9 @@ import re
 import logging
 from typing import List
 
+# Define PII_FIELDS based on common sensitive information
+PII_FIELDS = ("name", "email", "phone", "ssn", "password")
+
 
 def filter_datum(fields: List[str], redaction: str,
                  message: str, separator: str) -> str:
@@ -58,3 +61,29 @@ class RedactingFormatter(logging.Formatter):
         original_message = super().format(record)
         return filter_datum(self.fields, self.REDACTION,
                             original_message, self.SEPARATOR)
+
+
+def get_logger() -> logging.Logger:
+    """
+    Creates and returns a logger named 'user_data' with specific configuration.
+
+    Returns:
+        logging.Logger: Configured logger object.
+    """
+    logger = logging.getLogger("user_data")
+    logger.setLevel(logging.INFO)
+    logger.propagate = False
+
+    stream_handler = logging.StreamHandler()
+    formatter = RedactingFormatter(fields=PII_FIELDS)
+    stream_handler.setFormatter(formatter)
+
+    logger.addHandler(stream_handler)
+
+    return logger
+
+
+# Verify that the logger is configured correctly
+if __name__ == "__main__":
+    logger = get_logger()
+    logger.info("name=John; email=john.doe@example.com; phone=123-456-7890; ssn=123-45-6789; password=secret123; address=123 Main St; dob=01/01/1980;")
