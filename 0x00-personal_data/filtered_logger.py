@@ -86,4 +86,6 @@ def get_logger() -> logging.Logger:
 # Verify that the logger is configured correctly
 if __name__ == "__main__":
     logger = get_logger()
-    logger.info("name=John; email=john.doe@example.com; phone=123-456-7890; ssn=123-45-6789; password=secret123; address=123 Main St; dob=01/01/1980;")
+    logger.info("name=John; email=john.doe@example.com; "
+                "phone=123-456-7890; ssn=123-45-6789; "
+                "password=secret123; address=123 Main St; dob=01/01/1980;")
