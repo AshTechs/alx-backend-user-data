@@ -36,6 +36,12 @@ class RedactingFormatter(logging.Formatter):
     SEPARATOR = ";"
 
     def __init__(self, fields: List[str]):
+        """
+        Initialize the formatter with the specified fields to obfuscate.
+
+        Args:
+            fields (List[str]): List of fields to obfuscate.
+        """
         super(RedactingFormatter, self).__init__(self.FORMAT)
         self.fields = fields
 
@@ -49,6 +55,6 @@ class RedactingFormatter(logging.Formatter):
         Returns:
             str: The formatted and obfuscated log record.
         """
-        original_message = super(RedactingFormatter, self).format(record)
-        return filter_datum((self.fields, self.REDACTION,
-                            original_message, self.SEPARATOR))
+        original_message = super().format(record)
+        return filter_datum(self.fields, self.REDACTION,
+                            original_message, self.SEPARATOR)
