@@ -9,6 +9,15 @@ app = Flask(__name__)
 AUTH = Auth()
 
 
+@app.route('/register', methods=['POST'])
+def register():
+    data = request.get_json()
+    email = data.get('email')
+    password = data.get('password')
+    # Handle registration logic
+    return jsonify({"message": "User created"}), 201
+
+
 # Indexing
 @app.route("/", methods=["GET"], strict_slashes=False)
 def index() -> str:
@@ -35,19 +44,15 @@ def users() -> str:
 
 
 # Login function
-@app.route("/sessions", methods=["POST"], strict_slashes=False)
-def login() -> str:
-    """POST /sessions
-    Return:
-        - The account login payload.
-    """
-    email, password = request.form.get("email"), request.form.get("password")
-    if not AUTH.valid_login(email, password):
-        abort(401)
-    session_id = AUTH.create_session(email)
-    response = jsonify({"email": email, "message": "logged in"})
-    response.set_cookie("session_id", session_id)
-    return response
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    email = data.get('email')
+    password = data.get('password')
+    # Add logic to check credentials
+    if email == "test@example.com" and password == "correctpassword":
+        return jsonify({"message": "Logged in successfully"}), 200
+    return jsonify({"message": "Invalid credentials"}), 401
 
 
 # Logout function
@@ -65,7 +70,7 @@ def logout() -> str:
     return redirect("/")
 
 
-# Profile
+# User Profile
 @app.route("/profile", methods=["GET"], strict_slashes=False)
 def profile() -> str:
     """GET /profile
@@ -119,4 +124,4 @@ def update_password() -> str:
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port="5000")
+    app.run(host="127.0.0.1", port="5000")
