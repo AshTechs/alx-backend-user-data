@@ -10,10 +10,10 @@ import bcrypt
 
 
 class Auth:
-    """Auth class to interact with the authentication database.
-    """
+    """Auth class to interact with the authentication database."""
 
-    def __init__(self):
+    def __init__(self) -> None:
+        """Initialize a new Auth instance."""
         self._db = DB()
 
     def _hash_password(self, password: str) -> bytes:
@@ -43,12 +43,12 @@ class Auth:
         Raises:
             ValueError: If a user with the provided email already exists.
         """
-        try:
-            # Check if user already exists
-            self._db._session.query(User).filter_by(email=email).one()
+        # Check if user already exists
+        existing_user = self._db._session.query(User).filter_by(email=email).first()
+        if existing_user:
             raise ValueError(f"User {email} already exists")
-        except NoResultFound:
-            # User does not exist, create a new one
-            hashed_password = self._hash_password(password)
-            new_user = self._db.add_user(email, hashed_password)
-            return new_user
+
+        # User does not exist, hash password and add new user
+        hashed_password = self._hash_password(password)
+        new_user = self._db.add_user(email, hashed_password)
+        return new_user
